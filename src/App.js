@@ -64,7 +64,7 @@ function App() {
         const returnData = await getTopTraffic(
           formatStart,
           formatEnd,
-          "source.ip",
+          "source.ip.keyword",
           5
         );
         setSrcBar(returnData.bar);
@@ -76,7 +76,7 @@ function App() {
         const returnData = await getTopTraffic(
           formatStart,
           formatEnd,
-          "destination.ip",
+          "destination.ip.keyword",
           5
         );
         setDstBar(returnData.bar);
