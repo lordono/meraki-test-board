@@ -10,8 +10,8 @@ const UIDatePicker = ({ date = new Date(), setDate }) => {
       onChange={(date) => setDate(date)}
       showTimeSelect
       timeFormat="HH:mm"
-      timeIntervals={30}
-      dateFormat="MMM d, yyyy @ kk:mm:ss.000"
+      timeIntervals={10}
+      dateFormat="MMM d, yyyy @ kk:mm"
     />
   );
 };

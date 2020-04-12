@@ -15,10 +15,11 @@ import MetricLinksDown from "./components/Metric/LinksDown";
 function App() {
   // set the initial end date to 5 minutes prior
   const initialDate = new Date();
-  initialDate.setMinutes(-5);
+  const initialMinutes = initialDate.getMinutes();
+  initialDate.setMinutes(initialMinutes - 10);
 
   // initialize all data
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(initialDate);
   const [endDate, setEndDate] = useState(new Date());
   const [searchDate, setSearchDate] = useState({
     start: initialDate,
@@ -35,6 +36,8 @@ function App() {
     linksAll: [],
     linksDown: [],
   });
+
+  console.log(searchDate);
 
   // useEffect
   // - activate whenever searchDate is changed
@@ -64,7 +67,7 @@ function App() {
         const returnData = await getTopTraffic(
           formatStart,
           formatEnd,
-          "source.ip.keyword",
+          "source.ip",
           5
         );
         setSrcBar(returnData.bar);
@@ -76,7 +79,7 @@ function App() {
         const returnData = await getTopTraffic(
           formatStart,
           formatEnd,
-          "destination.ip.keyword",
+          "destination.ip",
           5
         );
         setDstBar(returnData.bar);
