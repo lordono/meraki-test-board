@@ -58,6 +58,21 @@ $color-blue-light: rgba(240, 250, 240, 1);
   font-size: 1rem;
   height: 42px;
   margin: 20px;
+  .btn-update {
+    height: 42px;
+    margin-left: 15px;
+    padding: 0 25px;
+    border: none;
+    outline: none;
+    background-color: #3d3d3d;
+    color: #fafafa;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #4d4d4d;
+    }
+  }
   .calendar-icon {
     background-color: #fafafa;
     color: #000;
@@ -84,6 +99,10 @@ $color-blue-light: rgba(240, 250, 240, 1);
 
 // wrong-input
 .date-container.incorrect {
+  .btn-update {
+    background-color: #8d8d8d;
+    cursor: not-allowed;
+  }
   .calendar-icon {
     border-bottom: 3px solid lighten($color-red, 5%);
   }
@@ -218,6 +237,87 @@ $color-blue-light: rgba(240, 250, 240, 1);
     }
     ::-webkit-scrollbar-thumb:window-inactive {
       background: rgba(160, 160, 160, 0.4);
+    }
+  }
+}
+
+// drawer
+.drawer-menu {
+  position: fixed;
+  z-index: 99;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  bottom: 0;
+  transform: none;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: grid;
+  grid-template-areas:
+    "overlay-top overlay-top overlay-top"
+    "overlay-left menu overlay-right";
+  grid-template-columns: 5fr 15fr 5fr;
+  grid-template-rows: 5fr 15fr;
+
+  @media (--small) {
+    grid-template-columns: 2fr 10fr;
+  }
+
+  &.hide {
+    transform: translateY(100%);
+
+    .drawer-content {
+      opacity: 0;
+      transition-delay: 300ms;
+    }
+  }
+  .overlay-top {
+    grid-area: overlay-top;
+    opacity: 0;
+  }
+  .overlay-left {
+    grid-area: overlay-left;
+    opacity: 0;
+  }
+  .overlay-right {
+    grid-area: overlay-right;
+    opacity: 0;
+  }
+
+  .drawer-content {
+    display: block;
+    flex-flow: column wrap;
+    transform: none;
+    opacity: 1;
+    color: #fff;
+    transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0;
+    contain: content;
+    grid-area: menu;
+    background-color: rgba(50, 50, 50, 0.925);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-sizing: border-box;
+    padding: 24px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    @media (--small) {
+      min-width: 400px;
+    }
+
+    & a {
+      text-decoration: none;
+      color: #ffffff80;
+      display: block;
+      padding: 16px 0;
+
+      &:hover {
+        color: #69f0ae;
+      }
+    }
+
+    & > * + * {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
   }
 }

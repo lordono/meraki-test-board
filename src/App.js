@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getTraffic, getTopTraffic, getWan } from "./httpCall";
-import "./App.css";
+
+import Drawer from "./components/Drawer";
 import DateContainer from "./components/DateContainer";
 import MetricDevicesUp from "./components/Metric/DevicesUp";
 import BarSource from "./components/Bar/Source";
@@ -12,6 +13,8 @@ import MetricDevicesDown from "./components/Metric/DevicesDown";
 import MetricLinksUp from "./components/Metric/LinksUp";
 import MetricLinksDown from "./components/Metric/LinksDown";
 
+import "./App.css";
+
 function App() {
   // set the initial end date to 5 minutes prior
   const initialDate = new Date();
@@ -19,12 +22,14 @@ function App() {
   initialDate.setMinutes(initialMinutes - 10);
 
   // initialize all data
+  const [drawerHidden, setDrawerHidden] = useState(true);
   const [startDate, setStartDate] = useState(initialDate);
   const [endDate, setEndDate] = useState(new Date());
   const [searchDate, setSearchDate] = useState({
     start: initialDate,
     end: new Date(),
   });
+
   const [srcBar, setSrcBar] = useState([]);
   const [dstBar, setDstBar] = useState([]);
   const [traffic, setTraffic] = useState([]);
@@ -36,8 +41,6 @@ function App() {
     linksAll: [],
     linksDown: [],
   });
-
-  console.log(searchDate);
 
   // useEffect
   // - activate whenever searchDate is changed
@@ -88,14 +91,24 @@ function App() {
     }
   }, [searchDate]);
 
+  const onSearch = () => {
+    setSearchDate({
+      start: startDate,
+      end: endDate,
+    });
+  };
+
   // props
-  const dateProps = { startDate, endDate, setStartDate, setEndDate };
+  const dateProps = { startDate, endDate, setStartDate, setEndDate, onSearch };
+  const drawerProps = { drawerHidden, setDrawerHidden };
+
   return (
     <div className="main-container">
+      <Drawer content={<div>Drawer</div>} {...drawerProps} />
       <DateContainer {...dateProps} />
       <div className="dashboard-wrapper">
         <div className="dashboard">
-          <div className="devices-up">
+          <div className="devices-up" onClick={() => setDrawerHidden(false)}>
             <div className="box-title">Devices Up</div>
             <MetricDevicesUp {...wan} />
           </div>
