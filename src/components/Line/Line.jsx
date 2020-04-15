@@ -72,10 +72,10 @@ const LineComponent = ({ data, options = {}, width = 50, height = 10 }) => {
       <Line
         redraw={false}
         data={lineData}
-        width={width}
-        height={height}
+        // width={width}
+        // height={height}
         options={{
-          // maintainAspectRatio: true,
+          maintainAspectRatio: false,
           ...options,
         }}
       />

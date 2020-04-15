@@ -423,13 +423,13 @@ $color-blue-light: rgba(240, 250, 240, 1);
 
 .line {
   width: calc(100% - 40px);
-  height: calc(100% - 40px);
+  height: calc(100% - 10px);
   min-height: 175px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 10px 0;
+  padding: 2.5px 0;
 }
 
 .bar {
