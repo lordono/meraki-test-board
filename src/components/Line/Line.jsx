@@ -45,7 +45,7 @@ const defaultDataset = {
   pointHitRadius: 10,
 };
 
-const LineComponent = ({ data, options = {} }) => {
+const LineComponent = ({ data, options = {}, width = 50, height = 10 }) => {
   const [lineData, setLineData] = useState({});
   useEffect(() => {
     // Shuffle colors
@@ -72,10 +72,10 @@ const LineComponent = ({ data, options = {} }) => {
       <Line
         redraw={false}
         data={lineData}
-        width={50}
-        height={15}
+        width={width}
+        height={height}
         options={{
-          maintainAspectRatio: true,
+          // maintainAspectRatio: true,
           ...options,
         }}
       />

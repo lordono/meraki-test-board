@@ -45,6 +45,7 @@ const BarDestination = ({ data = [] }) => {
       <Bar
         title="MX Top 5 Destinations"
         data={barData}
+        height={27.5}
         options={{
           scales: {
             yAxes: [

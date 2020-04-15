@@ -54,6 +54,7 @@ const BarSource = ({ data = [] }) => {
       <Bar
         title="MX Top 5 Sources"
         data={barData}
+        height={27.5}
         options={{
           scales: {
             yAxes: [

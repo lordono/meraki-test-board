@@ -1,5 +1,12 @@
 import fetch from "node-fetch";
-import { trafficQuery, barQuery, lineQuery, wanQuery } from "./query";
+import {
+  trafficQuery,
+  barQuery,
+  lineQuery,
+  wanQuery,
+  perfQuery,
+  latencyQuery,
+} from "./query";
 
 export const getWan = async (formatStart, formatEnd) => {
   try {
@@ -129,5 +136,89 @@ export const getTopTraffic = async (formatStart, formatEnd, field, size) => {
       bar: [],
       line: [],
     };
+  }
+};
+
+export const getPerformance = async (formatStart, formatEnd) => {
+  try {
+    const baseUrl = process.env.REACT_APP_ES_URL;
+    const netflowIndex = process.env.REACT_APP_PERFORMANCE_INDEX;
+    const body = perfQuery(formatStart, formatEnd);
+    const response = await fetch(`${baseUrl}/${netflowIndex}/_search?size=0`, {
+      method: "post",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    });
+    const rjson = await response.json();
+    const resData = rjson.aggregations.by_serial.buckets;
+    const cleanedData = resData.map((i) => ({
+      label: i.key,
+      data: i.by_serial.buckets
+        .filter((j) => j.avg_perf.value !== null)
+        .map((j) => ({
+          x: j.key_as_string,
+          y: j.avg_perf.value,
+        })),
+    }));
+    return cleanedData;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+export const getLatency = async (formatStart, formatEnd) => {
+  try {
+    const baseUrl = process.env.REACT_APP_ES_URL;
+    const netflowIndex = process.env.REACT_APP_LATENCY_INDEX;
+    const body = latencyQuery(formatStart, formatEnd, "latencyMs");
+    const response = await fetch(`${baseUrl}/${netflowIndex}/_search?size=0`, {
+      method: "post",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    });
+    const rjson = await response.json();
+    const resData = rjson.aggregations.by_serial.buckets;
+    const cleanedData = resData.map((i) => ({
+      label: i.key,
+      data: i.by_serial.buckets
+        .filter((j) => j.avg_field.value !== null)
+        .map((j) => ({
+          x: j.key_as_string,
+          y: j.avg_field.value,
+        })),
+    }));
+    return cleanedData;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+export const getLoss = async (formatStart, formatEnd) => {
+  try {
+    const baseUrl = process.env.REACT_APP_ES_URL;
+    const netflowIndex = process.env.REACT_APP_LATENCY_INDEX;
+    const body = latencyQuery(formatStart, formatEnd, "lossPercent");
+    const response = await fetch(`${baseUrl}/${netflowIndex}/_search?size=0`, {
+      method: "post",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    });
+    const rjson = await response.json();
+    const resData = rjson.aggregations.by_serial.buckets;
+    const cleanedData = resData.map((i) => ({
+      label: i.key,
+      data: i.by_serial.buckets
+        .filter((j) => j.avg_field.value !== null)
+        .map((j) => ({
+          x: j.key_as_string,
+          y: j.avg_field.value,
+        })),
+    }));
+    return cleanedData;
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 };

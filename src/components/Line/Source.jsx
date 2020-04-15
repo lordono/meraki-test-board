@@ -51,6 +51,7 @@ const LineSource = ({ data = [] }) => {
       <Line
         title="Traffic Top 5 Sources"
         data={lineData}
+        height={11.5}
         options={{
           scales: {
             yAxes: [
@@ -73,12 +74,20 @@ const LineSource = ({ data = [] }) => {
                 },
                 time: {
                   displayFormats: {
-                    hour: "hA MMM D",
+                    millisecond: "H:mm",
+                    second: "H:mm",
+                    minute: "H:mm",
+                    hour: "H:mm",
+                    day: "H:mm",
+                    week: "H:mm",
+                    month: "H:mm",
+                    quarter: "H:mm",
+                    year: "H:mm",
                   },
                   parser: "YYYY-MM-DDTHH:mm:ss.000Z",
                 },
                 scaleLabel: {
-                  display: true,
+                  display: false,
                   labelString: "Time",
                 },
               },

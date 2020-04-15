@@ -328,11 +328,15 @@ $color-blue-light: rgba(240, 250, 240, 1);
   height: 100%;
   margin: 12.5px;
   display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr 1.5fr 1.5fr 1.5fr;
+  // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  // grid-template-rows: 25vh 25vh 0 17.5vh 17.5vh 17.5vh 17.5vh;
+  grid-template-rows: 22.5vh 22.5vh 22.5vh 22.5vh 17.5vh 17.5vh 17.5vh 17.5vh;
   grid-template-areas:
     "devices-up devices-down traffic traffic traffic"
-    "links-up links-down traffic traffic traffic"
+    "links-up links-down perf-line perf-line perf-line"
+    "notification-table notification-table latency-line latency-line latency-line"
+    "notification-table notification-table loss-line loss-line loss-line"
     "top-source-bar top-source-bar top-source-line top-source-line top-source-line"
     "top-source-bar top-source-bar top-source-line top-source-line top-source-line"
     "top-dest-bar top-dest-bar top-dest-line top-dest-line top-dest-line"
@@ -365,6 +369,18 @@ $color-blue-light: rgba(240, 250, 240, 1);
   .top-dest-line {
     grid-area: top-dest-line;
   }
+  .perf-line {
+    grid-area: perf-line;
+  }
+  .latency-line {
+    grid-area: latency-line;
+  }
+  .loss-line {
+    grid-area: loss-line;
+  }
+  .notification-table {
+    grid-area: notification-table;
+  }
   > div {
     width: calc(100% - 15px);
     height: calc(100% - 15px);
@@ -391,15 +407,16 @@ $color-blue-light: rgba(240, 250, 240, 1);
 .metric {
   width: calc(100% - 40px);
   height: calc(100% - 40px);
-  min-height: 175px;
+  min-height: 135px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
+  font-size: 0.9rem;
   .main {
     .value {
-      font-size: 3rem;
+      font-size: 2.25rem;
     }
   }
 }
@@ -412,7 +429,7 @@ $color-blue-light: rgba(240, 250, 240, 1);
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 20px;
+  padding: 10px 0;
 }
 
 .bar {
@@ -423,5 +440,5 @@ $color-blue-light: rgba(240, 250, 240, 1);
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 20px;
+  padding: 10px 0;
 }

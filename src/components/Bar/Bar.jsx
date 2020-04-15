@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { HorizontalBar } from "react-chartjs-2";
 
-const Bar = ({ title = "Initial Dataset", data, options = {} }) => {
+const Bar = ({
+  title = "Initial Dataset",
+  data,
+  options = {},
+  width = 50,
+  height = 25,
+}) => {
   const [barData, setBarData] = useState({});
 
   useEffect(() => {
@@ -25,8 +31,8 @@ const Bar = ({ title = "Initial Dataset", data, options = {} }) => {
     <div className="bar">
       <HorizontalBar
         data={barData}
-        width={50}
-        height={25}
+        width={width}
+        height={height}
         options={{
           maintainAspectRatio: true,
           legend: { display: false },

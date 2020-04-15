@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { getTraffic, getTopTraffic, getWan } from "./httpCall";
+import {
+  getTraffic,
+  getTopTraffic,
+  getWan,
+  getPerformance,
+  getLatency,
+  getLoss,
+} from "./httpCall";
 
 import Drawer from "./components/Drawer";
 import DateContainer from "./components/DateContainer";
@@ -12,6 +19,9 @@ import LineTraffic from "./components/Line/Traffic";
 import MetricDevicesDown from "./components/Metric/DevicesDown";
 import MetricLinksUp from "./components/Metric/LinksUp";
 import MetricLinksDown from "./components/Metric/LinksDown";
+import LineLoss from "./components/Line/Loss";
+import LineLatency from "./components/Line/Latency";
+import LinePerformance from "./components/Line/Performance";
 
 import "./App.css";
 
@@ -35,6 +45,9 @@ function App() {
   const [traffic, setTraffic] = useState([]);
   const [srcLine, setSrcLine] = useState([]);
   const [dstLine, setDstLine] = useState([]);
+  const [latencyLine, setLatencyLine] = useState([]);
+  const [lossLine, setLossLine] = useState([]);
+  const [perfLine, setPerfLine] = useState([]);
   const [wan, setWan] = useState({
     devicesAll: [],
     devicesDown: [],
@@ -65,6 +78,24 @@ function App() {
         setTraffic(returnData);
       }, 300);
 
+      // get performance data
+      setTimeout(async () => {
+        const returnData = await getPerformance(formatStart, formatEnd);
+        setPerfLine(returnData);
+      }, 600);
+
+      // get latency data
+      setTimeout(async () => {
+        const returnData = await getLatency(formatStart, formatEnd);
+        setLatencyLine(returnData);
+      }, 900);
+
+      // get loss data
+      setTimeout(async () => {
+        const returnData = await getLoss(formatStart, formatEnd);
+        setLossLine(returnData);
+      }, 1200);
+
       // get source data
       setTimeout(async () => {
         const returnData = await getTopTraffic(
@@ -75,7 +106,7 @@ function App() {
         );
         setSrcBar(returnData.bar);
         setSrcLine(returnData.line);
-      }, 600);
+      }, 1500);
 
       // get destination data
       setTimeout(async () => {
@@ -87,7 +118,7 @@ function App() {
         );
         setDstBar(returnData.bar);
         setDstLine(returnData.line);
-      }, 900);
+      }, 1800);
     }
   }, [searchDate]);
 
@@ -127,6 +158,32 @@ function App() {
           <div className="traffic">
             <div className="box-title">MX Traffic</div>
             <LineTraffic data={traffic} />
+          </div>
+          <div className="perf-line">
+            <div className="box-title">Performance</div>
+            <LinePerformance data={perfLine} />
+          </div>
+          <div className="latency-line">
+            <div className="box-title">Latency (ms)</div>
+            <LineLatency data={latencyLine} />
+          </div>
+          <div className="loss-line">
+            <div className="box-title">Loss (%)</div>
+            <LineLoss data={lossLine} />
+          </div>
+          <div className="notification-table">
+            <div className="box-title">Notification Table</div>
+            <div
+              style={{
+                height: "100%",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <p>Pending Webhooks...</p>
+            </div>
           </div>
           <div className="top-source-bar">
             <div className="box-title">Top 5 Sources for MX Traffic</div>

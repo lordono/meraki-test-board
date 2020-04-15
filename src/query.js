@@ -144,6 +144,100 @@ export const lineQuery = (start, end, field, tophits) => ({
   },
 });
 
+/**
+ * Search for perfomance data for Line Graph
+ * @param {string} start Start date to search in string format eg. 2020-04-06T09:30:00
+ * @param {string} end End date to search in string format eg. 2020-04-06T10:30:00
+ */
+export const perfQuery = (start, end) => ({
+  query: {
+    bool: {
+      must_not: {
+        exists: {
+          field: "errors",
+        },
+      },
+      filter: {
+        range: {
+          "@timestamp": {
+            gte: start,
+            lte: end,
+          },
+        },
+      },
+    },
+  },
+  aggs: {
+    by_serial: {
+      terms: {
+        field: "serial.keyword",
+      },
+      aggs: {
+        by_serial: {
+          date_histogram: {
+            field: "@timestamp",
+            calendar_interval: "1m",
+          },
+          aggs: {
+            avg_perf: {
+              avg: {
+                field: "perfScore",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+});
+
+/**
+ * Search for latency data for Line Graph
+ * @param {string} start Start date to search in string format eg. 2020-04-06T09:30:00
+ * @param {string} end End date to search in string format eg. 2020-04-06T10:30:00
+ */
+export const latencyQuery = (start, end, field) => ({
+  query: {
+    bool: {
+      filter: {
+        range: {
+          "@timestamp": {
+            gte: start,
+            lte: end,
+          },
+        },
+      },
+    },
+  },
+  aggs: {
+    by_serial: {
+      terms: {
+        field: "serial.keyword",
+      },
+      aggs: {
+        by_serial: {
+          date_histogram: {
+            field: "@timestamp",
+            calendar_interval: "1m",
+          },
+          aggs: {
+            avg_field: {
+              avg: {
+                field: field,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+});
+
+/**
+ * Search for WAN data for Metric Graph
+ * @param {string} start Start date to search in string format eg. 2020-04-06T09:30:00
+ * @param {string} end End date to search in string format eg. 2020-04-06T10:30:00
+ */
 export const wanQuery = (start, end) => ({
   query: {
     bool: {
