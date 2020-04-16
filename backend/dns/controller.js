@@ -1,8 +1,10 @@
-const dns = require("dns");
+const { Resolver } = require("dns");
+const resolver = new Resolver();
+resolver.setServers(["8.8.8.8"]);
 
 async function lookupPromise(ip) {
   return new Promise((resolve, reject) => {
-    dns.reverse(ip, (err, hostnames) => {
+    resolver.reverse(ip, (err, hostnames) => {
       if (err) reject(err);
       resolve(hostnames);
     });
