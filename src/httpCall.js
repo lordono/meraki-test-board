@@ -1,4 +1,6 @@
 import fetch from "node-fetch";
+import dns from "dns";
+import { promisify } from "util";
 import {
   trafficQuery,
   barQuery,
@@ -96,12 +98,7 @@ export const getTopTraffic = async (formatStart, formatEnd, field, size) => {
     });
     console.log("searching for primary filebeat - ", field);
     const rjson1 = await response1.json();
-
     const resData1 = rjson1.aggregations.by_ip.buckets;
-    const barData = resData1.map((i) => ({
-      label: i.key,
-      data: i.sum_network_bytes.value,
-    }));
 
     // await new Promise((r) => setTimeout(r, 100));
 
@@ -119,6 +116,27 @@ export const getTopTraffic = async (formatStart, formatEnd, field, size) => {
     console.log("searching for secondary filebeat - ", field);
     const rjson2 = await response2.json();
     const resData2 = rjson2.aggregations.by_ip.buckets;
+
+    // dns lookup
+    // const dnsObj = await resData1.reduce(async (acc, cur) => {
+    //   try {
+    //     const hosts = await promisify(dns.reverse)(cur.key);
+    //     console.log(hosts)
+    //     if (hosts && hosts.length > 0) acc[cur.key] = hosts[0]
+    //     else acc[cur.key] = null
+    //     return acc;
+    //   } catch(err) {
+    //     console.log(err)
+    //     acc[cur.key] = null;
+    //     return acc;
+    //   }
+    // }, {});
+
+    // transform data
+    const barData = resData1.map((i) => ({
+      label: i.key,
+      data: i.sum_network_bytes.value,
+    }));
     const lineData = resData2.map((i) => ({
       label: i.key,
       data: i.by_timestamp.buckets.map((j) => ({
@@ -126,6 +144,7 @@ export const getTopTraffic = async (formatStart, formatEnd, field, size) => {
         y: j.by_network_bytes.value,
       })),
     }));
+
     return {
       bar: barData,
       line: lineData,

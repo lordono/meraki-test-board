@@ -1,4 +1,17 @@
 /**
+ * Calculate the hours between date1 and date2
+ * @param {string} dt1 Start date to search in string format eg. 2020-04-06T09:30:00
+ * @param {string} dt2 End date to search in string format eg. 2020-04-06T09:30:00
+ */
+const getInterval = (dt1, dt2) => {
+  const start = Date.parse(dt1);
+  const end = Date.parse(dt2);
+  let diff = (end - start) / 1000;
+  diff /= 60 * 60;
+  return Math.abs(Math.round(diff));
+};
+
+/**
  * Search for data for Traffic Line Graph
  * @param {string} start Start date to search in string format eg. 2020-04-06T09:30:00
  * @param {string} end End date to search in string format eg. 2020-04-06T10:30:00
@@ -25,7 +38,7 @@ export const trafficQuery = (start, end) => ({
     by_timestamp: {
       date_histogram: {
         field: "@timestamp",
-        calendar_interval: "1m",
+        calendar_interval: getInterval(start, end) > 3 ? "1h" : "1m",
       },
       aggs: {
         by_network_bytes: {
@@ -129,7 +142,7 @@ export const lineQuery = (start, end, field, tophits) => ({
         by_timestamp: {
           date_histogram: {
             field: "@timestamp",
-            calendar_interval: "1m",
+            calendar_interval: getInterval(start, end) > 3 ? "1h" : "1m",
           },
           aggs: {
             by_network_bytes: {
@@ -176,7 +189,7 @@ export const perfQuery = (start, end) => ({
         by_serial: {
           date_histogram: {
             field: "@timestamp",
-            calendar_interval: "1m",
+            calendar_interval: getInterval(start, end) > 3 ? "1h" : "1m",
           },
           aggs: {
             avg_perf: {
@@ -218,7 +231,7 @@ export const latencyQuery = (start, end, field) => ({
         by_serial: {
           date_histogram: {
             field: "@timestamp",
-            calendar_interval: "1m",
+            calendar_interval: getInterval(start, end) > 3 ? "1h" : "1m",
           },
           aggs: {
             avg_field: {
