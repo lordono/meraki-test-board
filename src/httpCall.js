@@ -1,6 +1,4 @@
 import fetch from "node-fetch";
-import dns from "dns";
-import { promisify } from "util";
 import {
   trafficQuery,
   barQuery,
@@ -118,27 +116,26 @@ export const getTopTraffic = async (formatStart, formatEnd, field, size) => {
     const resData2 = rjson2.aggregations.by_ip.buckets;
 
     // dns lookup
-    // const dnsObj = await resData1.reduce(async (acc, cur) => {
-    //   try {
-    //     const hosts = await promisify(dns.reverse)(cur.key);
-    //     console.log(hosts)
-    //     if (hosts && hosts.length > 0) acc[cur.key] = hosts[0]
-    //     else acc[cur.key] = null
-    //     return acc;
-    //   } catch(err) {
-    //     console.log(err)
-    //     acc[cur.key] = null;
-    //     return acc;
-    //   }
-    // }, {});
+    const dnsObj = {};
+    for (let i = 0; i < resData1.length; i++) {
+      const ip = resData1[i].key;
+      const baseUrl = process.env.REACT_APP_SERVER;
+      const response = await fetch(`${baseUrl}/dns/reverse?ip=${ip}`, {
+        method: "get",
+        headers: { "Content-Type": "application/json" },
+      });
+      const rjson = await response.json();
+      if (rjson.length > 0) dnsObj[ip] = rjson[0];
+      else dnsObj[ip] = null;
+    }
 
     // transform data
     const barData = resData1.map((i) => ({
-      label: i.key,
+      label: dnsObj[i.key] || i.key,
       data: i.sum_network_bytes.value,
     }));
     const lineData = resData2.map((i) => ({
-      label: i.key,
+      label: dnsObj[i.key] || i.key,
       data: i.by_timestamp.buckets.map((j) => ({
         x: j.key_as_string,
         y: j.by_network_bytes.value,
