@@ -267,3 +267,25 @@ export const wanQuery = (start, end) => ({
   sort: [{ "@timestamp": "desc" }],
   size: 23,
 });
+
+/**
+ * Search for Webhook Alerts
+ * @param {string} start Start date to search in string format eg. 2020-04-06T09:30:00
+ * @param {string} end End date to search in string format eg. 2020-04-06T10:30:00
+ */
+export const alertQuery = (start, end) => ({
+  query: {
+    bool: {
+      filter: {
+        range: {
+          occurredAt: {
+            gte: start,
+            lte: end,
+          },
+        },
+      },
+    },
+  },
+  sort: [{ occurredAt: "desc" }],
+  size: 100,
+});

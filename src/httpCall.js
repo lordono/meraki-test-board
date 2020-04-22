@@ -6,6 +6,7 @@ import {
   wanQuery,
   perfQuery,
   latencyQuery,
+  alertQuery,
 } from "./query";
 
 export const getWan = async (formatStart, formatEnd) => {
@@ -233,6 +234,46 @@ export const getLoss = async (formatStart, formatEnd) => {
         })),
     }));
     return cleanedData;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+export const getAlert = async (formatStart, formatEnd) => {
+  try {
+    const baseUrl = process.env.REACT_APP_ES_URL;
+    const webhookIndex = process.env.REACT_APP_WEBHOOK_INDEX;
+    const body = alertQuery(formatStart, formatEnd);
+    const response = await fetch(`${baseUrl}/${webhookIndex}/_search`, {
+      method: "post",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    });
+    const rjson = await response.json();
+    console.log(rjson.hits.hits);
+    return rjson.hits.hits;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+export const getNetwork = async () => {
+  try {
+    const baseUrl = process.env.REACT_APP_SERVER;
+    const organization = process.env.REACT_APP_ORGANIZATION;
+    const response = await fetch(
+      `${baseUrl}/meraki/organizations/${organization}/networks`,
+      {
+        method: "get",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const rjson = await response.json();
+    return rjson;
   } catch (error) {
     console.log(error);
     return [];

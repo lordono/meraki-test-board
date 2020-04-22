@@ -6,6 +6,7 @@ import {
   getPerformance,
   getLatency,
   getLoss,
+  getAlert,
 } from "./httpCall";
 
 import Drawer from "./components/Drawer";
@@ -24,6 +25,7 @@ import LineLatency from "./components/Line/Latency";
 import LinePerformance from "./components/Line/Performance";
 
 import "./App.css";
+import WebHook from "./components/Webhook";
 
 function App() {
   // set the initial end date to 5 minutes prior
@@ -48,6 +50,7 @@ function App() {
   const [latencyLine, setLatencyLine] = useState([]);
   const [lossLine, setLossLine] = useState([]);
   const [perfLine, setPerfLine] = useState([]);
+  const [alert, setAlert] = useState([]);
   const [wan, setWan] = useState({
     devicesAll: [],
     devicesDown: [],
@@ -96,6 +99,12 @@ function App() {
         setLossLine(returnData);
       }, 1200);
 
+      // get alerts
+      setTimeout(async () => {
+        const returnData = await getAlert(formatStart, formatEnd);
+        setAlert(returnData);
+      }, 1500);
+
       // get source data
       setTimeout(async () => {
         const returnData = await getTopTraffic(
@@ -106,7 +115,7 @@ function App() {
         );
         setSrcBar(returnData.bar);
         setSrcLine(returnData.line);
-      }, 1500);
+      }, 1800);
 
       // get destination data
       setTimeout(async () => {
@@ -118,7 +127,7 @@ function App() {
         );
         setDstBar(returnData.bar);
         setDstLine(returnData.line);
-      }, 1800);
+      }, 2100);
     }
   }, [searchDate]);
 
@@ -173,17 +182,7 @@ function App() {
           </div>
           <div className="notification-table">
             <div className="box-title">Notification Table</div>
-            <div
-              style={{
-                height: "100%",
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <p>Pending Webhooks...</p>
-            </div>
+            <WebHook data={alert} />
           </div>
           <div className="top-source-bar">
             <div className="box-title">Top 5 Sources for MX Traffic</div>
