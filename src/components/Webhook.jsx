@@ -20,6 +20,7 @@ const WebHook = ({ data }) => {
     network: i._source.networkName,
     alertType: i._source.alertType,
     alertData: i._source.alertData,
+    networkUrl: i._source.networkUrl,
   }));
   useEffect(() => {
     if (containerRef.current !== null) {
@@ -64,6 +65,13 @@ const WebHook = ({ data }) => {
           <div className="title">Type: {webhook.alertType}</div>
           <div className="date">Date: {webhook.occurredAt}</div>
           <div className="network">Network: {webhook.network}</div>
+          <a
+            href={webhook.networkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Click here to go Dashboard
+          </a>
           <div className="details">Details:</div>
           <pre>{JSON.stringify(webhook.alertData, null, 2)}</pre>
         </div>
